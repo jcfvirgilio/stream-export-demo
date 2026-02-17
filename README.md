@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Demo de Exportación CSV con Next.js y MySQL (Docker)
 
-## Getting Started
+## Requisitos
 
-First, run the development server:
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) instalado
+- Node.js 18+ y [Yarn](https://yarnpkg.com/) o npm
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Instalación y ejecución
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Clona el repositorio y entra a la carpeta del proyecto:**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   ```sh
+   git clone <url-del-repo>
+   cd stream-export-demo
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Instala las dependencias:**
 
-## Learn More
+   ```sh
+   yarn install
+   # o
+   npm install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Levanta la base de datos MySQL con Docker:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```sh
+   docker compose up -d
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   Esto creará la base de datos, la tabla `user_metrics` y la llenará automáticamente con 50,000 registros de prueba.
 
-## Deploy on Vercel
+4. **Inicia la aplicación en modo desarrollo:**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```sh
+   yarn dev
+   # o
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   La app estará disponible en [http://localhost:3000](http://localhost:3000)
+
+5. **(Opcional) Compila para producción:**
+   ```sh
+   yarn build && yarn start
+   # o
+   npm run build && npm start
+   ```
+
+## ¿Cómo funciona la demo?
+
+- El frontend muestra un botón para descargar un archivo CSV grande (50,000 registros) y una barra de progreso en tiempo real.
+- El backend (Next.js API Route) lee los datos desde MySQL y los envía por streaming, calculando el tamaño total para que la barra de progreso funcione correctamente.
+
+## Notas
+
+- Si necesitas reinicializar la base de datos (por ejemplo, para regenerar los datos), ejecuta:
+  ```sh
+  docker compose down
+  docker compose up -d
+  ```
+- Puedes modificar la cantidad de registros editando el archivo `mysql-init/01_create_user_metrics.sql`.
